@@ -19,11 +19,6 @@ else
   let g:ctrlp_ext_vars = [s:mark_var]
 endif
 
-function! s:parse_line(line)
-  let mx = '^\s*\(\d\+\)\s\+\(\d\+\)\s\+\(\d\+\)\s\+\(.*\)$'
-  let cols = map(range(1, 4), "substitute(a:line, mx, '\\'.v:val, '')")
-endfunction
-
 function! ctrlp#mark#init()
   let s = ''
   redir => s
@@ -34,7 +29,7 @@ endfunc
 
 function! ctrlp#mark#accept(mode, str)
   call ctrlp#exit()
-	exe "normal! g'".matchstr(a:str, '^\s*\zs.\ze\s.*')
+	exe "normal! g'".matchstr(a:str, '^\s*\zs\S\+\ze\s.*')
 endfunction
 
 function! ctrlp#mark#exit()
