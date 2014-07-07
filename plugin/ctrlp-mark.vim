@@ -1,1 +1,1 @@
-command! CtrlPMark cal ctrlp#init(ctrlp#mark#id())
+command! CtrlPMark call ctrlp#mark#command()

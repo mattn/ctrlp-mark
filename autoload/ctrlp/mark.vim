@@ -19,13 +19,24 @@ else
   let g:ctrlp_ext_vars = [s:mark_var]
 endif
 
-function! ctrlp#mark#init()
+if exists("g:ctrlp_mark_marks")
+  unlet g:ctrlp_mark_marks
+endif
+
+function! ctrlp#mark#command()
   let s = ''
   redir => s
   silent marks
   redir END
-  return split(s, "\n")[1:]
-endfunc
+
+  let g:ctrlp_mark_marks = split(s, "\n")[1:]
+
+  call ctrlp#init(ctrlp#mark#id())
+endfunction
+
+function! ctrlp#mark#init()
+    return g:ctrlp_mark_marks
+endfunction
 
 function! ctrlp#mark#accept(mode, str)
   call ctrlp#exit()
