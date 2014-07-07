@@ -29,7 +29,11 @@ function! ctrlp#mark#command()
   silent marks
   redir END
 
-  let g:ctrlp_mark_marks = split(s, "\n")[1:]
+  if exists("g:ctrlp_mark_match_string")
+    let g:ctrlp_mark_marks = filter(split(s, "\n"), g:ctrlp_mark_match_string)[1:]
+  else
+    let g:ctrlp_mark_marks = split(s, "\n")[1:]
+  endif
 
   call ctrlp#init(ctrlp#mark#id())
 endfunction
