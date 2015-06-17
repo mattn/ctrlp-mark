@@ -23,7 +23,7 @@ if exists("g:ctrlp_mark_marks")
   unlet g:ctrlp_mark_marks
 endif
 
-function! ctrlp#mark#command()
+function! ctrlp#mark#get_marks()
   let s = ''
   redir => s
   silent marks
@@ -34,12 +34,16 @@ function! ctrlp#mark#command()
   else
     let g:ctrlp_mark_marks = split(s, "\n")[1:]
   endif
+endfunction
 
+function! ctrlp#mark#command()
+  call ctrlp#mark#get_marks()
   call ctrlp#init(ctrlp#mark#id())
 endfunction
 
 function! ctrlp#mark#init()
-    return g:ctrlp_mark_marks
+  call ctrlp#mark#get_marks()
+  return g:ctrlp_mark_marks
 endfunction
 
 function! ctrlp#mark#accept(mode, str)
