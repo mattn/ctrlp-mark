@@ -5,6 +5,7 @@ let g:loaded_ctrlp_mark = 1
 
 let s:mark_var = {
 \  'init':   'ctrlp#mark#init()',
+\  'enter':  'ctrlp#mark#enter()',
 \  'exit':   'ctrlp#mark#exit()',
 \  'accept': 'ctrlp#mark#accept',
 \  'lname':  'mark',
@@ -19,31 +20,31 @@ else
   let g:ctrlp_ext_vars = [s:mark_var]
 endif
 
-if exists("g:ctrlp_mark_marks")
-  unlet g:ctrlp_mark_marks
-endif
-
-function! ctrlp#mark#get_marks()
+function! s:get_marks()
   let s = ''
   redir => s
   silent marks
   redir END
 
+  let l:marks = []
   if exists("g:ctrlp_mark_match_string")
-    let g:ctrlp_mark_marks = filter(split(s, "\n"), g:ctrlp_mark_match_string)[1:]
+    let l:marks = filter(split(s, "\n"), g:ctrlp_mark_match_string)[1:]
   else
-    let g:ctrlp_mark_marks = split(s, "\n")[1:]
+    let l:marks = split(s, "\n")[1:]
   endif
+  return l:marks
 endfunction
 
 function! ctrlp#mark#command()
-  call ctrlp#mark#get_marks()
   call ctrlp#init(ctrlp#mark#id())
 endfunction
 
+function! ctrlp#mark#enter() abort
+  let s:ctrlp_mark_marks = s:get_marks()
+endfunction
+
 function! ctrlp#mark#init()
-  call ctrlp#mark#get_marks()
-  return g:ctrlp_mark_marks
+  return s:ctrlp_mark_marks
 endfunction
 
 function! ctrlp#mark#accept(mode, str)
@@ -52,6 +53,7 @@ function! ctrlp#mark#accept(mode, str)
 endfunction
 
 function! ctrlp#mark#exit()
+  unlet s:ctrlp_mark_marks
 endfunction
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
